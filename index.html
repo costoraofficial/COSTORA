@@ -895,6 +895,143 @@ nav {
     }
 }
 
+
+/* ===== FINAL MOBILE FIXES ===== */
+@media (max-width: 700px) {
+
+    body {
+        padding: 10px;
+        overflow-x: hidden;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .brand-header {
+        padding: 24px 14px 18px;
+    }
+
+    .brand-header h1 {
+        font-size: 38px;
+        letter-spacing: 4px;
+    }
+
+    .brand-header .subtitle {
+        font-size: 17px;
+    }
+
+    /* Keep navigation centered and prevent it from being cut off */
+    .app-nav {
+        position: sticky;
+        top: 8px;
+        left: auto;
+        transform: none;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        justify-content: center;
+        gap: 8px;
+        padding: 8px;
+        border-radius: 18px;
+    }
+
+    .app-nav a {
+        padding: 9px 13px;
+        font-size: 12px;
+        flex: 0 0 auto;
+    }
+
+    /* Recipe Details: stack neatly on phones */
+    .recipe-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+
+    .recipe-notes-field {
+        grid-column: 1 !important;
+    }
+
+    #recipe-section {
+        padding: 18px !important;
+    }
+
+    #recipe-section input,
+    #recipe-section select,
+    #recipe-section textarea {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    /* Saved Recipes: one field per row */
+    .saved-recipe-tools {
+        grid-template-columns: 1fr !important;
+    }
+
+    #savedRecipeSelect {
+        width: 100% !important;
+    }
+
+    .saved-actions {
+        grid-template-columns: 1fr !important;
+    }
+
+    .recipe-action-row,
+    .data-action-row {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Ingredient Database: stack all fields */
+    .database-form {
+        grid-template-columns: 1fr !important;
+    }
+
+    .database-form > div:nth-child(1),
+    .database-form > div:nth-child(2) {
+        grid-column: auto !important;
+    }
+
+    #ingredient-database-section .add-btn,
+    #toggleIngredientsBtn {
+        width: 100% !important;
+    }
+
+    .ingredient-tools {
+        flex-direction: column;
+    }
+
+    .ingredient-tools input,
+    .ingredient-tools select {
+        width: 100% !important;
+        min-width: 0;
+    }
+
+    /* Recipe ingredient rows: one field per row */
+    #ingredients-section .ingredient {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Additional Costs + Selling */
+    #costs-section,
+    #selling-section {
+        grid-template-columns: 1fr !important;
+    }
+
+    #costs-section h2,
+    #selling-section h2,
+    #selling-section .calculate-btn {
+        grid-column: 1 !important;
+    }
+
+    /* Results */
+    .price-summary {
+        grid-template-columns: 1fr !important;
+    }
+}
+
 </style>
 </head>
 
