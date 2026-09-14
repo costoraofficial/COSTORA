@@ -1,0 +1,2501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>COSTORA | Food Costing & Profit</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f8f5f1;
+    margin: 0;
+    padding: 20px;
+    color: #3d302b;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+    margin: 0 0 6px 0;
+    font-size: 42px;
+    letter-spacing: 6px;
+    font-weight: 700;
+    color: #5b4036;
+}
+
+.subtitle {
+    text-align: center;
+    color: #777;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: white;
+    padding: 24px;
+    border-radius: 18px;
+    margin-bottom: 20px;
+    border: 1px solid #eadfd7;
+    box-shadow: 0 6px 20px rgba(61,48,43,0.06);
+}
+
+input, select {
+    padding: 11px 12px;
+    margin: 5px;
+    border: 1px solid #ddd4ce;
+    border-radius: 10px;
+    background: #fff;
+    color: #3d302b;
+    font-size: 14px;
+    outline: none;
+    transition: border 0.2s, box-shadow 0.2s;
+}
+
+input:focus, select:focus {
+    border-color: #8a6b5e;
+    box-shadow: 0 0 0 3px rgba(138, 107, 94, 0.12);
+}
+
+button {
+    padding: 11px 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: transform 0.15s, opacity 0.15s, box-shadow 0.15s;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(61,48,43,0.12);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+.add-btn {
+    background: #5b4036;
+    color: white;
+}
+
+.reset-btn {
+    background: #f1ebe7;
+    color: #5b4036;
+    border: 1px solid #e2d6cf;
+}
+
+.reset-btn:hover {
+    background: #e9dfd9;
+}
+
+.delete-btn {
+    background: #f7e9e7;
+    color: #934b45;
+    border: 1px solid #ebd0cc;
+}
+
+.delete-btn:hover {
+    background: #f1dcd8;
+}
+
+.remove-btn {
+    background: transparent;
+    color: #934b45;
+    border: 1px solid #ebd0cc;
+}
+
+.remove-btn:hover {
+    background: #f7e9e7;
+}
+
+.calculate-btn {
+    width: 100%;
+    background: #5b4036;
+    color: white;
+    font-size: 18px;
+    margin-top: 15px;
+}
+
+.ingredient {
+    margin-bottom: 10px;
+}
+
+.result {
+    font-size: 18px;
+    line-height: 1.8;
+}
+
+.big-result {
+    font-size: 26px;
+    font-weight: bold;
+}
+.ingredient {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    align-items: end;
+    margin-bottom: 18px;
+    padding: 15px;
+    background: #faf8f6;
+    border-radius: 12px;
+}
+
+.ingredient label {
+    font-size: 13px;
+    font-weight: bold;
+    color: #5b4036;
+}
+
+.ingredient input,
+.ingredient select {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 4px 0 0 0;
+}
+
+.saved-recipe-tools {
+    display: grid;
+   grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 16px;
+    align-items: end;
+}
+
+#savedRecipeSelect {
+    width: 100%;
+    grid-column: 1 / -1;
+    box-sizing: border-box;
+}
+
+.saved-tool-field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    align-items: stretch;
+}
+
+.saved-tool-field label {
+    display: block !important;
+    width: auto !important;
+    margin-bottom: 0 !important;
+}
+
+.saved-tool-field input,
+.saved-tool-field select {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.saved-actions {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 18px;
+    margin-top: 16px;
+}
+
+.recipe-action-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.data-action-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.saved-actions button {
+    width: 100%;
+    height: 52px;
+    margin: 0;
+}
+
+#ingredient-database-section {
+    margin-top: 20px;
+}
+
+nav {
+    justify-content: center;
+}
+
+.database-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr 0.75fr;
+    gap: 16px 24px;
+    align-items: end;
+}
+
+.database-form > div {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.database-form > div:nth-child(1) {
+    grid-column: 1 / 2;
+}
+
+.database-form > div:nth-child(2) {
+    grid-column: 2 / 4;
+}
+
+.database-form input,
+.database-form select {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.database-form label {
+    margin: 0;
+}
+
+#ingredient-database-section .add-btn,
+#toggleIngredientsBtn {
+    width: 165px !important;
+    height: 52px !important;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+
+/* Saved Recipes field sizing */
+#saved-recipes-section .saved-recipe-tools {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+#saved-recipes-section .saved-tool-field input,
+#saved-recipes-section .saved-tool-field select,
+#savedRecipeSelect {
+    width: 100% !important;
+    height: 44px !important;
+    box-sizing: border-box;
+    margin: 0 !important;
+}
+
+#savedRecipeSelect {
+    display: block;
+    margin-top: 12px !important;
+}
+
+
+/* Small gap between Ingredient Database form and Save Ingredient button */
+#ingredient-database-section .database-form {
+    margin-bottom: 14px;
+}
+
+
+/* Ingredients section: make all entry boxes equal size */
+#ingredients-section .ingredient > div {
+    min-width: 0;
+}
+
+#ingredients-section .ingredient input,
+#ingredients-section .ingredient select {
+    width: 100% !important;
+    height: 44px !important;
+    box-sizing: border-box;
+    margin: 4px 0 0 0 !important;
+}
+
+#ingredients-section .ingredient {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+
+/* Additional Costs + Selling: neat vertical alignment */
+#costs-section,
+#selling-section {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: 14px 20px;
+    align-items: center;
+}
+
+#costs-section h2,
+#selling-section h2 {
+    grid-column: 1 / -1;
+    margin-bottom: 6px;
+}
+
+#costs-section label,
+#selling-section label {
+    margin: 0;
+    font-weight: 600;
+    color: #5b4036;
+}
+
+#costs-section input,
+#selling-section input {
+    width: 100% !important;
+    height: 44px !important;
+    box-sizing: border-box;
+    margin: 0 !important;
+}
+
+#costs-section br,
+#selling-section br {
+    display: none;
+}
+
+#selling-section .calculate-btn {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 700px) {
+
+    #costs-section,
+    #selling-section {
+        grid-template-columns: 1fr;
+    }
+
+    #costs-section h2,
+    #selling-section h2,
+    #selling-section .calculate-btn {
+        grid-column: 1;
+    }
+
+
+    body {
+        padding: 10px;
+    }
+
+    .card {
+        padding: 15px;
+    }
+
+    .ingredient {
+        grid-template-columns: 1fr;
+    }
+
+    #saved-recipes-section .saved-tool-field {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 7px;
+    }
+
+    #saved-recipes-section .saved-tool-field label {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+    }
+  
+    #saved-recipes-section .saved-tool-field input,
+    #saved-recipes-section .saved-tool-field select {
+        width: 100% !important;
+        margin: 0 !important;
+    }
+
+    .recipe-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .saved-recipe-tools {
+        grid-template-columns: 1fr;
+    }
+
+    .price-summary {
+        grid-template-columns: 1fr;
+    }
+
+    input,
+    select,
+    button {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .big-result {
+        font-size: 20px;
+    }
+}
+.result {
+    background: linear-gradient(135deg, #fffaf6, #f6eee8);
+    border: 2px solid #eadfd7;
+}
+
+.result h2 {
+    color: #5b4036;
+    margin-top: 0;
+}
+
+.big-result {
+    background: #5b4036;
+    color: white;
+    padding: 15px;
+    border-radius: 12px;
+    margin: 15px 0;
+    text-align: center;
+}
+
+.result strong {
+    color: #5b4036;
+}
+.result > div {
+    margin: 10px 0;
+    line-height: 1.4;
+}
+
+.result hr {
+    border: none;
+    border-top: 1px solid #d8cbc3;
+    margin: 18px 0;
+}
+
+.result .big-result strong {
+    color: white;
+}
+.price-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 18px 0;
+}
+
+.price-box {
+    background: white;
+    border: 1px solid #e4d8d0;
+    border-radius: 12px;
+    padding: 16px 10px;
+    text-align: center;
+}
+
+.price-box > span {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 8px;
+    color: #777;
+}
+
+.price-box strong {
+    display: block;
+    font-size: 18px;
+    color: #5b4036;
+}
+.profit-positive {
+    background: #557a5b !important;
+    color: white;
+}
+
+.profit-negative {
+    background: #9b4b4b !important;
+    color: white;
+}
+
+.brand-header {
+    Text-align: center;
+    padding: 28px 10px 12px;
+    margin bottom: 12px;
+    background: linear-gradient(135deg, #fffaf6, #f4ece6);
+    border: 1px solid #eadfd7;
+    border-radius: 20px;
+}
+
+.brand-header h1 {
+    margin: 0;
+    font-size: 46px;
+    letter-spacing: 4px;
+    font-weight: 800;
+    color: #4b342c;
+    line-height: 1;
+}
+
+.brand-header .subtitle {
+    margin: 8px 0 5px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #5b4036;
+}
+
+.brand-header .tagline {
+    margin: 0;
+    font-size: 13px;
+    color: #8a7a72;
+    letter-spacing: 0.5px;
+}
+
+.workspace-label {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #f1ebe7;
+    color: #7a6258;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+}
+
+.card h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 28px;
+    color: #3d302b;
+}
+
+.app-nav {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+    position: sticky;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    padding: 8px;
+    width: max-content;
+    max-width: 90%;
+    background: rgba(248, 245, 241, 0.95);
+    border-radius: 999px;
+    box-shadow: 0 4px 15px rgba(61,48,43,0.10);
+}
+
+.app-nav a {
+    text-decoration: none;
+    color: #5b4036;
+    background: rgba(255,255,255,0.75);
+    border: 1px solid #dfd2ca;
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    transition: 0.2s;
+    box-shadow: 0 2px 6px rgba(61,48,43,0.06);
+}
+
+.app-nav a:hover {
+    background: #5b4036;
+    color: white;
+}
+#recipe-section,
+#ingredient-database-section,
+#costs-section,
+#selling-section,
+#results-section {
+    scroll-margin-top: 90px;
+}
+
+#recipe-section {
+    padding: 28px;
+}
+
+#recipe-section label {
+    display: inline-block;
+    width: 150px;
+    font-weight: 600;
+    color: #5b4036;
+    margin-bottom: 14px;
+    vertical-align: top;
+}
+
+#recipe-section input,
+#recipe-section select,
+#recipe-section textarea {
+    width: 280px;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.recipe-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 28px;
+    align-items: start;
+}
+
+.saved-recipe-tools {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 12px;
+    align-items: end;
+}
+
+.recipe-field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.recipe-field label {
+    width: auto !important;
+    margin-bottom: 0 !important;
+}
+
+.recipe-field input,
+.recipe-field select,
+.recipe-field textarea {
+    width: 100% !important;
+    margin: 0;
+}
+
+.recipe-notes-field {
+    grid-column: 1 / -1;
+}
+
+/* Recipe Details polish */
+#recipe-section .recipe-field input,
+#recipe-section .recipe-field select {
+    height: 44px;
+    min-height: 44px;
+    padding: 11px 12px;
+    box-sizing: border-box;
+}
+
+#recipe-section .recipe-notes-field {
+    margin-bottom: 12px;
+}
+
+
+.ingredient-category {
+    display: inline-block;
+    background: #f1ebe7;
+    color: #7a5c50;
+    border: 1px solid #e2d6cf;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 5px;
+}
+
+.ingredient-tools {
+    display: flex;
+    gap: 10px;
+    margin: 16px 0;
+    flex-wrap: wrap;
+}
+
+.ingredient-tools input,
+.ingredient-tools select {
+    flex: 1;
+    min-width: 180px;
+    margin: 0;
+}
+
+@media print {
+
+    body {
+        background: white;
+        padding: 0;
+    }
+
+    .card {
+        box-shadow: none;
+        border: none;
+    }
+
+    .card:not(.result) {
+        display: none;
+    }
+
+    .result {
+        display: block;
+        border: none;
+        background: white;
+    }
+
+    .result button {
+        display: none;
+    }
+
+    .big-result {
+        color: black !important;
+        background: white !important;
+        border: 2px solid #000;
+    }
+}
+
+.ingredient-category-section {
+    margin: 12px 0;
+    border: 1px solid #e5ddd7;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #fffdfb;
+}
+
+.ingredient-category-heading {
+    margin: 0;
+    padding: 16px 18px;
+    background: #f8f4f1;
+    color: #3d302b;
+    font-size: 17px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: 0.2s;
+}
+
+.ingredient-category-heading:hover {
+    background: #f1e9e3;
+}
+
+.ingredient-category-rows {
+    padding: 10px;
+}
+
+/* Saved ingredient row */
+.ingredient-item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    margin: 6px 0;
+    background: white;
+    border: 1px solid #eee7e2;
+    border-radius: 10px;
+}
+
+/* Ingredient action buttons */
+.ingredient-action-btn {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    margin: 2px;
+    border-radius: 9px;
+    font-size: 16px;
+    background: #f1ede9;
+    color: #5b4036;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ingredient-action-btn:hover {
+    background: #e6ddd7;
+    transform: translateY(-1px);
+}
+
+/* Edit button */
+.edit-action {
+    background: #efe6df;
+    color: #5b4036;
+}
+
+.edit-action:hover {
+    background: #e4d5ca;
+}
+
+/* History button */
+.history-action {
+    background: #f3f0ec;
+    color: #5b4036;
+}
+
+.history-action:hover {
+    background: #e7e1dc;
+}
+
+/* Delete button */
+.delete-action {
+    background: #f8e8e8;
+    color: #9b4b4b;
+}
+
+.delete-action:hover {
+    background: #f1d4d4;
+}
+
+.ingredient-main {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    min-width: 0;
+    flex: 2;
+}
+
+.ingredient-main strong {
+    font-size: 15px;
+}
+
+.ingredient-category {
+    font-size: 12px;
+    background: #efe8e2;
+    color: #6a5146;
+    padding: 4px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.ingredient-price {
+    flex: 0 0 145px;
+    font-size: 14px;
+    color: #5f554f;
+    white-space: nowrap;
+}
+
+.ingredient-actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+
+/* COSTORA layout polish — 14 Sep 2026 */
+#ingredient-database-section .database-form {
+    grid-template-columns: 1fr 1fr 0.75fr;
+    gap: 16px 24px;
+    align-items: start;
+}
+#ingredient-database-section .database-form > div {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 0;
+}
+#ingredient-database-section .database-form > div:nth-child(1) { grid-column: 1 / 2; }
+#ingredient-database-section .database-form > div:nth-child(2) { grid-column: 2 / 4; }
+#ingredient-database-section .database-form > div:nth-child(3) { grid-column: 1 / 2; }
+#ingredient-database-section .database-form > div:nth-child(4) { grid-column: 2 / 3; }
+#ingredient-database-section .database-form > div:nth-child(5) { grid-column: 3 / 4; }
+#ingredient-database-section .database-form label {
+    display: block;
+    min-height: 20px;
+    margin: 0;
+    line-height: 20px;
+}
+#ingredient-database-section .database-form br { display: none; }
+#ingredient-database-section .database-form input,
+#ingredient-database-section .database-form select {
+    width: 100%;
+    height: 44px;
+    box-sizing: border-box;
+    margin: 0;
+}
+#ingredient-database-section #customCategory { height: 44px; }
+#ingredient-database-section .add-btn,
+#ingredient-database-section #toggleIngredientsBtn {
+    width: 220px !important;
+    height: 52px !important;
+    box-sizing: border-box;
+    margin: 0;
+}
+@media (max-width: 700px) {
+    #ingredient-database-section .database-form {
+        grid-template-columns: 1fr;
+    }
+    #ingredient-database-section .database-form > div:nth-child(n) {
+        grid-column: 1 / -1;
+    }
+    #ingredient-database-section .add-btn,
+    #ingredient-database-section #toggleIngredientsBtn {
+        width: 100% !important;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="brand-header">
+    <h1>COSTORA</h1>
+    <p class="subtitle">Food Costing & Profit</p>
+    <p class="tagline">Know Your Costs . Grow Your Profits</p>
+    <p class="workspace-label">RECIPE COSTING WORKSPACE</p>
+</div>
+
+<div class="app-nav">
+    <a href="#recipe-section">Recipe</a>
+    <a href="#ingredient-database-section">Ingredients</a>
+    <a href="#costs-section">Costing</a>
+    <a href="#selling-section">Pricing</a>
+    <a href="#results-section">Results</a>
+</div>
+
+<div class="card" id="recipe-section">
+<h2>Recipe Details</h2>
+
+<div class="recipe-grid">
+
+<div class="recipe-field">
+    <label>Recipe Name</label>
+    <input type="text" id="recipeName" placeholder="e.g. Chocolate Chunky Cookies">
+</div>
+
+<div class="recipe-field">
+    <label>Recipe Category</label>
+    
+    <select id="recipeCategory" onchange="toggleCustomRecipeCategory()">
+    <option value="Cookies">Cookies</option>
+    <option value="Cakes">Cakes</option>
+    <option value="Cheesecakes">Cheesecakes</option>
+    <option value="Brownies">Brownies</option>
+    <option value="Bread">Bread</option>
+    <option value="Desserts">Desserts</option>
+    <option value="Drinks">Drinks</option>
+    <option value="Savoury">Savoury</option>
+    <option value="Sauces">Sauces</option>
+    <option value="Custom">➕ Add New Category...</option>
+    </select>
+
+    <input
+        type="text"
+        id="customRecipeCategory"
+        placeholder="Type new recipe category"
+        style="display:none;"
+    >
+</div>
+
+<div class="recipe-field">
+
+    <label>Recipe Status</label>
+    <select id="recipeStatus">
+        <option value="Testing">🧪 Testing</option>
+        <option value="Active">✅ Active</option>
+        <option value="Archived">📦 Archived</option>
+    </select>
+
+</div>
+
+<div class="recipe-field">
+    <label>Recipe Yield</label>
+    <input type="number" id="yield" placeholder="e.g. 10">
+</div>
+
+<div class="recipe-field recipe-notes-field">
+    <label>Recipe Notes</label>
+    <textarea
+        id="recipeNotes"
+        rows="4"
+        placeholder="e.g. Bake at 170°C for 15 mins, 80g dough per cookie..."
+    ></textarea>
+</div>
+
+</div>
+
+<button class="add-btn" onclick="saveRecipe()">💾 Save Recipe</button>
+
+<button type="button" class="reset-btn" onclick="resetRecipe()">
+    ＋ New Recipe
+</button>
+
+</div>
+
+<div class="card" id="saved-recipes-section">
+<h2>📚 Saved Recipes</h2>
+
+<div class="saved-recipe-tools">
+<div class="saved-tool-field">
+    <label>Recipe</label>
+    <input
+        type="text"
+        id="recipeSearch"
+        placeholder="Search saved recipes..."
+        oninput="refreshRecipeDropdown()"
+    >
+</div>
+
+<div class="saved-tool-field">
+    <label>Category</label>
+    <select id="recipeCategoryFilter" onchange="refreshRecipeDropdown()">
+        <option value="">All Categories</option>
+        <option value="Cookies">Cookies</option>
+        <option value="Cakes">Cakes</option>
+        <option value="Cheesecakes">Cheesecakes</option>
+        <option value="Brownies">Brownies</option>
+        <option value="Bread">Bread</option>
+        <option value="Desserts">Desserts</option>
+        <option value="Drinks">Drinks</option>
+        <option value="Savoury">Savoury</option>
+        <option value="Sauces">Sauces</option>
+        <option value="Other">Other</option>
+    </select>
+</div>
+
+<div class="saved-tool-field">
+    <label>Status</label>
+
+    <select id="recipeStatusFilter" onchange="refreshRecipeDropdown()">
+        <option value="">All Statuses</option>
+        <option value="Testing">🧪 Testing</option>
+        <option value="Active">✅ Active</option>
+        <option value="Archived">📦 Archived</option>
+    </select>
+</div>
+
+<select id="savedRecipeSelect">
+<option value="">Select saved recipe</option>
+</select>
+
+</div>
+
+<br>
+
+<div class="saved-actions">
+<div class="recipe-action-row">
+
+<button class="add-btn" onclick="loadRecipe()">Load Recipe</button>
+
+<button type="button" class="add-btn" onclick="duplicateRecipe()">Duplicate Recipe</button>
+
+<button type="button" class="delete-btn" onclick="deleteRecipe()">Delete Recipe</button>
+</div>
+
+<div class="data-action-row">
+
+<button type="button" onclick="exportData()">Export Data</button>
+
+<input
+    type="file"
+    id="importFile"
+    accept=".json"
+    onchange="importData(event)"
+    style="display:none;"
+>
+
+<button type="button" onclick="document.getElementById('importFile').click()">
+    Import Data
+</button>
+
+</div>
+</div>
+
+</div>
+
+<div class="card" id="ingredient-database-section">
+<h2>🧺 Ingredient Database</h2>
+<p class="small-text">Save ingredients you buy regularly so you don't have to enter the price every time.</p>
+
+<div class="database-form">
+
+<div>
+<label>Ingredient Name</label><br>
+<input type="text" id="dbName" placeholder="e.g. Butter">
+</div>
+
+<div>
+<label>Category</label><br>
+<select id="dbCategory" onchange="toggleCustomCategory()">
+<option value="Flour & Starches">Flour & Starches</option>
+<option value="Sugar & Sweeteners">Sugar & Sweeteners</option>
+<option value="Dairy">Dairy</option>
+<option value="Chocolate & Cocoa">Chocolate & Cocoa</option>
+<option value="Biscuits & Cookies">Biscuits & Cookies</option>
+<option value="Nuts & Seeds">Nuts & Seeds</option>
+<option value="Fruits">Fruits</option>
+<option value="Vegetables">Vegetables</option>
+<option value="Meat & Poultry">Meat & Poultry</option>
+<option value="Seafood">Seafood</option>
+<option value="Spices & Seasonings">Spices & Seasonings</option>
+<option value="Sauces & Condiments">Sauces & Condiments</option>
+<option value="Oils & Fats">Oils & Fats</option>
+<option value="Flavouring & Extracts">Flavouring & Extracts</option>
+<option value="Drinks & Liquids">Drinks & Liquids</option>
+<option value="Packaging">Packaging</option>
+<option value="Custom">➕ Add New Category...</option>
+</select>
+
+<input
+    type="text"
+    id="customCategory"
+    placeholder="Type new category"
+    style="display:none;"
+>
+</div>
+
+<div>
+<label>Purchase Price (BND)</label><br>
+<input type="number" id="dbPrice" placeholder="e.g. 4.50" step="0.01">
+</div>
+
+<div>
+<label>Pack Size</label><br>
+<input type="number" id="dbQty" placeholder="e.g. 250">
+</div>
+
+<div>
+<label>Unit</label><br>
+<select id="dbUnit">
+<option value="g">g</option>
+<option value="kg">kg</option>
+<option value="ml">ml</option>
+<option value="L">L</option>
+<option value="pcs">pcs</option>
+</select>
+</div>
+
+</div>
+
+<button class="add-btn" onclick="saveIngredient()">+ Save Ingredient</button>
+
+<div class="ingredient-tools">
+
+<input
+    type="text"
+    id="ingredientSearch"
+    placeholder="Search ingredients..."
+>
+
+<select id="ingredientFilter" onchange="displaySavedIngredients()">
+<option value="All">All Categories</option>
+<option value="Flour & Starches">Flour & Starches</option>
+<option value="Sugar & Sweeteners">Sugar & Sweeteners</option>
+<option value="Dairy">Dairy</option>
+<option value="Chocolate & Cocoa">Chocolate & Cocoa</option>
+<option value="Biscuits & Cookies">Biscuits & Cookies</option>
+<option value="Nuts & Seeds">Nuts & Seeds</option>
+<option value="Fruits">Fruits</option>
+<option value="Vegetables">Vegetables</option>
+<option value="Meat & Poultry">Meat & Poultry</option>
+<option value="Seafood">Seafood</option>
+<option value="Spices & Seasonings">Spices & Seasonings</option>
+<option value="Sauces & Condiments">Sauces & Condiments</option>
+<option value="Oils & Fats">Oils & Fats</option>
+<option value="Flavouring & Extracts">Flavouring & Extracts</option>
+<option value="Drinks & Liquids">Drinks & Liquids</option>
+<option value="Packaging">Packaging</option>
+<option value="Other">Other</option>
+</select>
+
+</div>
+
+<button
+    type="button"
+    class="add-btn"
+    id="toggleIngredientsBtn"
+    onclick="toggleSavedIngredients()"
+>
+    📋 View Saved Ingredients
+</button>
+
+<br><br>
+
+<div id="savedIngredients" style="display:none;"></div>
+
+<div id="priceHistoryBox" style="display:none; margin-top:20px;">
+    <h3>📈 Price History</h3>
+    <div id="priceHistoryContent"></div>
+</div>
+
+</div>
+
+<div class="card" id="ingredients-section">
+<h2>Ingredients</h2>
+
+<div id="ingredients">
+
+<div class="ingredient">
+
+<div>
+<label>Ingredient</label><br>
+
+<select class="ingredientSelect" onchange="fillIngredient(this)">
+<option value="">Select ingredient</option>
+</select>
+
+</div>
+
+<div>
+<label>Purchase Price (BND)</label><br>
+<input type="number" class="purchasePrice" placeholder="e.g. 4.50">
+</div>
+
+<div>
+<label>Pack Size</label><br>
+<input type="number" class="purchaseQty" placeholder="e.g. 250">
+</div>
+
+<div>
+<label>Pack Unit</label><br>
+<select class="purchaseUnit">
+<option value="g">g</option>
+<option value="kg">kg</option>
+<option value="ml">ml</option>
+<option value="L">L</option>
+<option value="pcs">pcs</option>
+</select>
+</div>
+
+<div>
+<label>Amount Used</label><br>
+<input type="number" class="usedQty" placeholder="e.g. 120">
+</div>
+
+<div>
+<label>Used Unit</label><br>
+<select class="usedUnit">
+<option value="g">g</option>
+<option value="kg">kg</option>
+<option value="ml">ml</option>
+<option value="L">L</option>
+<option value="pcs">pcs</option>
+</select>
+</div>
+
+<div>
+<label>Cost Used</label><br>
+<span class="ingredientCost">BND 0.00</span>
+</div>
+
+<button type="button" class="remove-btn" onclick="removeIngredient(this)">Remove</button>
+
+</div>
+
+
+</div>
+
+<button class="add-btn" onclick="addIngredient()">+ Add Ingredient</button>
+
+</div>
+
+<div class="card" id="costs-section">
+<h2>Additional Costs</h2>
+
+<label>Packaging Cost (BND)</label>
+<input type="number" id="packaging" value="0" step="0.01">
+
+<br>
+
+<label>Labour Cost (BND)</label>
+<input type="number" id="labour" value="0" step="0.01">
+
+<br>
+
+<label>Other / Overhead Cost (BND)</label>
+<input type="number" id="overhead" value="0" step="0.01">
+
+</div>
+
+<div class="card" id="selling-section">
+<h2>Selling</h2>
+
+<label>Selling Price Per Item (BND)</label>
+<input type="number" id="sellingPrice" step="0.01">
+
+<br>
+
+<label>Target Profit Margin (%)</label>
+<input type="number" id="targetMargin" value="60">
+
+<br>
+
+<label>Commission / Consignment (%)</label>
+<input type="number" id="commission" value="0">
+
+<button class="calculate-btn" onclick="calculate()">Calculate Cost & Profit</button>
+
+</div>
+
+<div class="card result" id="results-section">
+<h2>Results</h2>
+
+<div>Total Ingredient Cost: <strong>BND <span id="ingredientTotal">0.00</span></strong></div>
+
+<div>Total Recipe Cost: <strong>BND <span id="recipeTotal">0.00</span></strong></div>
+
+<div>Suggested Selling Price: <strong>BND <span id="suggestedPrice">0.00</span></strong></div>
+
+<div class="price-summary">
+
+    <div class="price-box">
+        <span>Cost Per Item</span>
+        <strong>BND <span id="costPerItem">0.00</span></strong>
+    </div>
+
+    <div class="price-box">
+        <span>Recommended Price</span>
+        <strong>BND <span id="recommendedPrice">0.00</span></strong>
+    </div>
+
+    <div class="price-box">
+        <span>Consignment Price</span>
+        <strong>BND <span id="consignmentPrice">0.00</span></strong>
+    </div>
+
+</div>
+
+<hr>
+
+<div>Your Revenue Per Item: BND <span id="revenue">0.00</span></div>
+
+<div>Commission Per Item: BND <span id="commissionAmount">0.00</span></div>
+
+<div>Gross Profit Per Item: BND <span id="grossProfit">0.00</span></div>
+
+<div class="big-result">
+Net Profit After Commission: BND <span id="profit">0.00</span>
+</div>
+
+<div>Net Profit Margin: <span id="margin">0.00</span>%</div>
+
+<div>Profit Per Batch: <strong>BND <span id="batchProfit">0.00</span></strong></div>
+
+<br>
+
+<button type="button" class="add-btn" onclick="window.print()">
+    🖨 Print / Save as PDF
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+function addIngredient() {
+
+const container = document.getElementById("ingredients");
+
+const row = document.createElement("div");
+row.className = "ingredient";
+
+row.innerHTML = `
+<div>
+<label>Ingredient</label><br>
+<select class="ingredientSelect" onchange="fillIngredient(this)">
+<option value="">Select ingredient</option>
+</select>
+</div>
+
+<div>
+<label>Purchase Price (BND)</label><br>
+<input type="number" class="purchasePrice" placeholder="e.g. 4.50">
+</div>
+
+<div>
+<label>Pack Size</label><br>
+<input type="number" class="purchaseQty" placeholder="e.g. 250">
+</div>
+
+<div>
+<label>Pack Unit</label><br>
+<select class="purchaseUnit">
+<option value="g">g</option>
+<option value="kg">kg</option>
+<option value="ml">ml</option>
+<option value="L">L</option>
+<option value="pcs">pcs</option>
+</select>
+</div>
+
+<div>
+<label>Amount Used</label><br>
+<input type="number" class="usedQty" placeholder="e.g. 120">
+</div>
+
+<div>
+<label>Used Unit</label><br>
+<select class="usedUnit">
+<option value="g">g</option>
+<option value="kg">kg</option>
+<option value="ml">ml</option>
+<option value="L">L</option>
+<option value="pcs">pcs</option>
+</select>
+</div>
+
+<div>
+<label>Cost Used</label><br>
+<span class="ingredientCost">BND 0.00</span>
+</div>
+
+<button type="button" class="remove-btn" onclick="removeIngredient(this)">Remove</button>
+`;
+
+container.appendChild(row);
+refreshIngredientDropdowns();
+
+}
+
+function removeIngredient(button) {
+    button.parentElement.remove();
+    calculate();
+}
+function calculate() {
+
+const prices = document.querySelectorAll(".purchasePrice");
+const packQtys = document.querySelectorAll(".purchaseQty");
+const usedQtys = document.querySelectorAll(".usedQty");
+const purchaseUnits = document.querySelectorAll(".purchaseUnit");
+const usedUnits = document.querySelectorAll(".usedUnit");
+const ingredientCosts = document.querySelectorAll(".ingredientCost");
+
+let ingredientTotal = 0;
+
+for (let i = 0; i < prices.length; i++) {
+
+let price = parseFloat(prices[i].value) || 0;
+let packQty = parseFloat(packQtys[i].value) || 0;
+let used = parseFloat(usedQtys[i].value) || 0;
+let purchaseUnit = purchaseUnits[i].value;
+let usedUnit = usedUnits[i].value;
+
+// Convert purchase quantity to base unit
+if (purchaseUnit === "kg") {
+    packQty = packQty * 1000;
+}
+
+if (purchaseUnit === "L") {
+    packQty = packQty * 1000;
+}
+
+// Convert recipe quantity to base unit
+if (usedUnit === "kg") {
+    used = used * 1000;
+}
+
+if (usedUnit === "L") {
+    used = used * 1000;
+}
+
+let costUsed = 0;
+
+if (packQty > 0) {
+    costUsed = (price / packQty) * used;
+    ingredientTotal += costUsed;
+}
+
+ingredientCosts[i].textContent = "BND " + (Math.round((costUsed + Number.EPSILON) * 100) / 100).toFixed(2);
+
+}
+
+const packaging = parseFloat(document.getElementById("packaging").value) || 0;
+const labour = parseFloat(document.getElementById("labour").value) || 0;
+const overhead = parseFloat(document.getElementById("overhead").value) || 0;
+
+const yieldAmount = parseFloat(document.getElementById("yield").value) || 1;
+
+const recipeTotal = ingredientTotal + packaging + labour + overhead;
+
+const costPerItem = recipeTotal / yieldAmount;
+const targetMargin =
+    parseFloat(document.getElementById("targetMargin").value) || 0;
+
+let suggestedPrice = 0;
+
+if (targetMargin < 100) {
+    suggestedPrice = costPerItem / (1 - targetMargin / 100);
+}
+const recommendedPrice = Math.ceil(suggestedPrice * 10) / 10;
+
+const sellingPrice = parseFloat(document.getElementById("sellingPrice").value) || 0;
+
+const commissionPercent = parseFloat(document.getElementById("commission").value) || 0;
+let consignmentPrice = 0;
+
+if (commissionPercent < 100) {
+    consignmentPrice = suggestedPrice / (1 - commissionPercent / 100);
+}
+
+const recommendedConsignmentPrice =
+    Math.ceil(consignmentPrice * 10) / 10;
+
+const commissionAmount = sellingPrice * (commissionPercent / 100);
+
+const revenue = sellingPrice - commissionAmount;
+
+const profit = revenue - costPerItem;
+
+const grossProfit = sellingPrice - costPerItem;
+
+const batchProfit = profit * yieldAmount;
+
+let margin = 0;
+
+if (revenue > 0) {
+    margin = (profit / revenue) * 100;
+}
+
+document.getElementById("ingredientTotal").textContent = ingredientTotal.toFixed(2);
+
+document.getElementById("recipeTotal").textContent = recipeTotal.toFixed(2);
+
+document.getElementById("costPerItem").textContent = costPerItem.toFixed(2);
+document.getElementById("suggestedPrice").textContent =
+    suggestedPrice.toFixed(2);
+document.getElementById("recommendedPrice").textContent =
+    recommendedPrice.toFixed(2);
+document.getElementById("consignmentPrice").textContent =
+    recommendedConsignmentPrice.toFixed(2);
+
+document.getElementById("revenue").textContent = revenue.toFixed(2);
+
+document.getElementById("commissionAmount").textContent = 
+    commissionAmount.toFixed(2);
+
+document.getElementById("grossProfit").textContent =
+    grossProfit.toFixed(2);
+
+document.getElementById("batchProfit").textContent =
+    batchProfit.toFixed(2);
+
+document.getElementById("profit").textContent = profit.toFixed(2);
+const profitBox = document.querySelector(".big-result");
+
+profitBox.classList.remove("profit-positive", "profit-negative");
+
+if (profit > 0) {
+    profitBox.classList.add("profit-positive");
+} else if (profit < 0) {
+    profitBox.classList.add("profit-negative");
+}
+
+document.getElementById("margin").textContent = margin.toFixed(1);
+
+}
+
+document.addEventListener("input", function() {
+    calculate();
+});
+
+document.addEventListener("change", function() {
+    calculate();
+});
+let ingredientDatabase = JSON.parse(localStorage.getItem("ingredientDatabase")) || [];
+
+let customIngredientCategories =
+    JSON.parse(localStorage.getItem("customIngredientCategories")) || [];
+
+ingredientDatabase = ingredientDatabase.map(function(item, index) {
+    if (!item.id) {
+        item.id = "ing_" + Date.now() + "_" + index;
+    }
+    return item;
+});
+
+localStorage.setItem(
+    "ingredientDatabase",
+    JSON.stringify(ingredientDatabase)
+);
+
+let editingIngredientIndex = null;
+
+function toggleCustomCategory() {
+    const categorySelect = document.getElementById("dbCategory");
+    const customInput = document.getElementById("customCategory");
+
+    if (categorySelect.value === "Custom") {
+        customInput.style.display = "inline-block";
+        customInput.focus();
+    } else {
+        customInput.style.display = "none";
+        customInput.value = "";
+    }
+}
+
+function refreshCustomIngredientCategories() {
+    const select = document.getElementById("dbCategory");
+
+    customIngredientCategories.forEach(function(category) {
+        const alreadyExists = Array.from(select.options).some(function(option) {
+            return option.value === category;
+        });
+
+        if (!alreadyExists) {
+            const option = document.createElement("option");
+            option.value = category;
+            option.textContent = category;
+
+            const customOption = select.querySelector('option[value="Custom"]');
+
+            select.insertBefore(option, customOption);
+        }
+    });
+}
+
+function saveIngredient() {
+
+    const name = document.getElementById("dbName").value.trim();
+    let category = document.getElementById("dbCategory").value;
+
+    if (category === "Custom") {
+        category = document.getElementById("customCategory").value.trim();
+
+        if (category === "") {
+            alert("Please type a category name.");
+            return;
+        }
+
+        if (!customIngredientCategories.includes(category)) {
+            customIngredientCategories.push(category);
+  
+            localStorage.setItem(
+                "customIngredientCategories",
+                JSON.stringify(customIngredientCategories)
+            );
+        }
+}
+    const price = parseFloat(document.getElementById("dbPrice").value);
+    const qty = parseFloat(document.getElementById("dbQty").value);
+    const unit = document.getElementById("dbUnit").value;
+
+    if (!name || isNaN(price) || isNaN(qty) || qty <= 0) {
+        alert("Please enter the ingredient name, purchase price and pack size.");
+        return;
+    }
+
+let priceHistory = [];
+
+if (editingIngredientIndex !== null) {
+    const oldIngredient = ingredientDatabase[editingIngredientIndex];
+
+    priceHistory = oldIngredient.priceHistory || [
+        {
+            price: oldIngredient.price,
+            qty: oldIngredient.qty,
+            unit: oldIngredient.unit,
+            date: null
+        }
+    ];
+
+    if (
+        oldIngredient.price !== price ||
+        oldIngredient.qty !== qty ||
+        oldIngredient.unit !== unit
+    ) {
+        priceHistory.push({
+            price: price,
+            qty: qty,
+            unit: unit,
+            date: new Date().toISOString().split("T")[0]
+        });
+    }
+
+} else {
+    priceHistory.push({
+        price: price,
+        qty: qty,
+        unit: unit,
+        date: new Date().toISOString().split("T")[0]
+    });
+}
+
+   const ingredient = {
+    id: editingIngredientIndex === null
+        ? "ing_" + Date.now()
+        : ingredientDatabase[editingIngredientIndex].id,
+
+    name: name,
+    category: category,
+    price: price,
+    qty: qty,
+    unit: unit,
+    priceHistory: priceHistory,
+};
+
+   if (editingIngredientIndex === null) {
+
+    ingredientDatabase.push(ingredient);
+
+} else {
+
+    ingredientDatabase[editingIngredientIndex] = ingredient;
+    editingIngredientIndex = null;
+
+}
+
+    localStorage.setItem(
+        "ingredientDatabase",
+        JSON.stringify(ingredientDatabase)
+    );
+
+    document.getElementById("dbName").value = "";
+    document.getElementById("dbCategory").value = "Baking";
+    document.getElementById("dbPrice").value = "";
+    document.getElementById("dbQty").value = "";
+    document.getElementById("dbUnit").value = "g";
+
+    displaySavedIngredients();
+refreshIngredientDropdowns();
+}
+
+function toggleSavedIngredients() {
+    const list = document.getElementById("savedIngredients");
+    const button = document.getElementById("toggleIngredientsBtn");
+
+    if (list.style.display === "none") {
+        list.style.display = "block";
+        button.textContent = "✕ Hide Saved Ingredients";
+    } else {
+        list.style.display = "none";
+        button.textContent = "📋 View Saved Ingredients";
+    }
+}
+function displaySavedIngredients() {
+
+    const container = document.getElementById("savedIngredients");
+
+    const searchText = document.getElementById("ingredientSearch").value.toLowerCase();
+    const selectedCategory = document.getElementById("ingredientFilter").value;
+
+    container.innerHTML = "";
+
+    const categoryGroups = {};
+
+    ingredientDatabase.forEach(function(item, index) {
+        const matchesSearch =
+            item.name.toLowerCase().includes(searchText);
+
+        const matchesCategory =
+            selectedCategory === "All" ||
+            (item.category || "Other") === selectedCategory;
+
+        if (!matchesSearch || !matchesCategory) {
+            return;
+        }
+
+        const row = document.createElement("div");
+        row.className = "ingredient-item-row";
+
+row.innerHTML =
+    '<div class="ingredient-main">' +
+        '<strong>' + item.name + '</strong>' +
+        '<span class="ingredient-category">' +
+            (item.category || "Other") +
+        '</span>' +
+    '</div>' +
+
+    '<div class="ingredient-price">' +
+        'BND ' + item.price.toFixed(2) +
+        ' / ' + item.qty + ' ' + item.unit +
+    '</div>' +
+
+    '<div class="ingredient-actions">' +
+        '<button type="button" class="ingredient-action-btn edit-action" onclick="editSavedIngredient(' +
+        index +
+        ')">✏️</button>' +
+
+        '<button type="button" class="ingredient-action-btn history-action" onclick="showPriceHistory(' +
+        index +
+        ')">📈</button>' +
+
+        '<button type="button" class="ingredient-action-btn delete-action" onclick="deleteSavedIngredient(' +
+        index +
+        ')">🗑️</button>' +
+    '</div>';
+
+const category = item.category || "Other";
+
+if (!categoryGroups[category]) {
+    categoryGroups[category] = [];
+}
+
+categoryGroups[category].push(row);
+    });
+
+const categoryIcons = {
+    "Flour & Starches": "🌾",
+    "Sugar & Sweeteners": "🍬",
+    "Dairy": "🥛",
+    "Chocolate & Cocoa": "🍫",
+    "Biscuits & Cookies": "🍪",
+    "Nuts & Seeds": "🥜",
+    "Fruits": "🍓",
+    "Vegetables": "🥕",
+    "Meat & Poultry": "🍗",
+    "Seafood": "🦐",
+    "Spices & Seasonings": "🧂",
+    "Sauces & Condiments": "🥫",
+    "Oils & Fats": "🫒",
+    "Flavouring & Extracts": "🌿",
+    "Drinks & Liquids": "🥤",
+    "Packaging": "📦",
+    "Other": "📌"
+};
+
+Object.keys(categoryGroups).forEach(function(category) {
+    const section = document.createElement("div");
+    section.className = "ingredient-category-section";
+
+    const heading = document.createElement("h3");
+    heading.className = "ingredient-category-heading";
+
+    heading.style.cursor = "pointer";
+
+    const rowsBox = document.createElement("div");
+    rowsBox.className = "ingredient-category-rows";
+
+    heading.textContent =
+        "▼ " +
+        (categoryIcons[category] || "📌") +
+        " " +
+        category;
+
+    categoryGroups[category].forEach(function(row) {
+        rowsBox.appendChild(row);
+    });
+
+    heading.onclick = function() {
+        if (rowsBox.style.display === "none") {
+            rowsBox.style.display = "block";
+            heading.textContent =
+                "▼ " +
+                (categoryIcons[category] || "📌") +
+                " " +
+                category;
+        } else {
+            rowsBox.style.display = "none";
+            heading.textContent =
+                "▶ " +
+                (categoryIcons[category] || "📌") +
+                " " +
+                category;
+        }
+    };
+
+    section.appendChild(heading);
+    section.appendChild(rowsBox);
+    container.appendChild(section);
+});
+}
+
+function showPriceHistory(index) {
+    const ingredient = ingredientDatabase[index];
+    const box = document.getElementById("priceHistoryBox");
+    const content = document.getElementById("priceHistoryContent");
+
+    const history = ingredient.priceHistory || [];
+
+    let html = "<strong>" + ingredient.name + "</strong><br><br>";
+
+    if (history.length === 0) {
+        html += "No price history recorded yet.";
+    } else {
+        history.forEach(function(entry, index) {
+    const date = entry.date || "Previous price";
+
+    html +=
+        date +
+        " — BND " +
+        Number(entry.price).toFixed(2) +
+        " / " +
+        entry.qty +
+        " " +
+        entry.unit;
+
+    if (index > 0) {
+        const previousPrice = Number(history[index - 1].price);
+        const currentPrice = Number(entry.price);
+
+        if (previousPrice > 0) {
+            const change =
+                ((currentPrice - previousPrice) / previousPrice) * 100;
+
+            if (change > 0) {
+                html += " — ▲ +" + change.toFixed(1) + "%";
+            } else if (change < 0) {
+                html += " — ▼ " + change.toFixed(1) + "%";
+            } else {
+                html += " — No change";
+            }
+        }
+    }
+
+    html += "<br>";
+});
+    }
+
+    content.innerHTML = html;
+    box.style.display = "block";
+
+box.scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+});
+
+}
+
+function editSavedIngredient(index) {
+editingIngredientIndex = index;
+
+    const ingredient = ingredientDatabase[index];
+
+    document.getElementById("dbName").value = ingredient.name;
+    document.getElementById("dbCategory").value = ingredient.category || "Other";
+    document.getElementById("dbPrice").value = ingredient.price;
+    document.getElementById("dbQty").value = ingredient.qty;
+    document.getElementById("dbUnit").value = ingredient.unit;
+
+}
+function deleteSavedIngredient(index) {
+
+    ingredientDatabase.splice(index, 1);
+
+    localStorage.setItem(
+        "ingredientDatabase",
+        JSON.stringify(ingredientDatabase)
+    );
+
+    displaySavedIngredients();
+refreshIngredientDropdowns();
+}
+
+document.getElementById("ingredientSearch").addEventListener("input", displaySavedIngredients);
+
+document.getElementById("ingredientFilter").addEventListener("change", displaySavedIngredients);
+
+displaySavedIngredients();
+refreshIngredientDropdowns();
+
+function refreshIngredientDropdowns() {
+
+    const dropdowns = document.querySelectorAll(".ingredientSelect");
+
+    dropdowns.forEach(function(select) {
+
+        const currentValue = select.value;
+
+        select.innerHTML = '<option value="">Select ingredient</option>';
+
+        const groups = {};
+
+const categoryOrder = [
+    "Flour & Starches",
+    "Sugar & Sweeteners",
+    "Dairy",
+    "Chocolate & Cocoa",
+    "Biscuits & Cookies",
+    "Nuts & Seeds",
+    "Fruits",
+    "Vegetables",
+    "Meat & Poultry",
+    "Seafood",
+    "Spices & Seasonings",
+    "Sauces & Condiments",
+    "Oils & Fats",
+    "Flavouring & Extracts",
+    "Drinks & Liquids",
+    "Packaging",
+    "Other"
+];
+
+ingredientDatabase.forEach(function(item, index) {
+    const category = item.category || "Other";
+
+    if (!groups[category]) {
+        groups[category] = [];
+    }
+
+    groups[category].push({
+        item: item,
+        index: index
+    });
+});
+
+categoryOrder.forEach(function(category) {
+
+if (!groups[category]) {
+    return;
+}
+
+    const optgroup = document.createElement("optgroup");
+    optgroup.label = category;
+
+    groups[category].forEach(function(entry) {
+        const option = document.createElement("option");
+
+        option.value = entry.index;
+        option.textContent = entry.item.name;
+
+        optgroup.appendChild(option);
+    });
+
+    select.appendChild(optgroup);
+});
+
+        select.value = currentValue;
+    });
+}
+
+function fillIngredient(select) {
+
+    const index = select.value;
+
+    if (index === "") {
+        return;
+    }
+
+    const ingredient = ingredientDatabase[index];
+
+    const row = select.closest(".ingredient");
+
+    row.querySelector(".purchasePrice").value = ingredient.price;
+    row.querySelector(".purchaseQty").value = ingredient.qty;
+    row.querySelector(".purchaseUnit").value = ingredient.unit;
+
+    calculate();
+}
+let recipeDatabase = JSON.parse(localStorage.getItem("recipeDatabase")) || [];
+
+let customRecipeCategories =
+    JSON.parse(localStorage.getItem("customRecipeCategories")) || [];
+
+let editingRecipeIndex = null;
+
+function toggleCustomRecipeCategory() {
+    const categorySelect = document.getElementById("recipeCategory");
+    const customInput = document.getElementById("customRecipeCategory");
+
+    if (categorySelect.value === "Custom") {
+        customInput.style.display = "inline-block";
+        customInput.focus();
+    } else {
+        customInput.style.display = "none";
+        customInput.value = "";
+    }
+}
+
+function refreshCustomRecipeCategories() {
+    const select = document.getElementById("recipeCategory");
+
+    customRecipeCategories.forEach(function(category) {
+        const alreadyExists = Array.from(select.options).some(function(option) {
+            return option.value === category;
+        });
+
+        if (!alreadyExists) {
+            const option = document.createElement("option");
+            option.value = category;
+            option.textContent = category;
+
+            const customOption = select.querySelector('option[value="Custom"]');
+
+            select.insertBefore(option, customOption);
+        }
+    });
+}
+
+function saveRecipe() {
+
+    const name = document.getElementById("recipeName").value.trim();
+    const recipeYield = parseFloat(document.getElementById("yield").value);
+
+let recipeCategory = document.getElementById("recipeCategory").value;
+
+if (recipeCategory === "Custom") {
+    recipeCategory = document.getElementById("customRecipeCategory").value.trim();
+
+    if (recipeCategory === "") {
+        alert("Please type a recipe category name.");
+        return;
+    }
+
+    if (!customRecipeCategories.includes(recipeCategory)) {
+        customRecipeCategories.push(recipeCategory);
+
+        localStorage.setItem(
+            "customRecipeCategories",
+            JSON.stringify(customRecipeCategories)
+        );
+    }
+
+}
+
+    if (!name || isNaN(recipeYield) || recipeYield <= 0) {
+        alert("Please enter a recipe name and recipe yield.");
+        return;
+    }
+
+    const ingredientRows = document.querySelectorAll(".ingredient");
+    const ingredients = [];
+
+    ingredientRows.forEach(function(row) {
+
+        const select = row.querySelector(".ingredientSelect");
+        const usedQty = parseFloat(row.querySelector(".usedQty").value) || 0;
+        const usedUnit = row.querySelector(".usedUnit").value;
+
+        if (select && select.value !== "") {
+           const selectedIngredient = ingredientDatabase[parseInt(select.value)];
+
+ingredients.push({
+    ingredientId: selectedIngredient.id,
+    usedQty: usedQty,
+    usedUnit: usedUnit
+});
+        }
+    });
+
+    const recipe = {
+        name: name,
+        category: recipeCategory,
+        status: document.getElementById("recipeStatus").value,
+        yield: recipeYield,
+        notes: document.getElementById("recipeNotes").value,
+        ingredients: ingredients,
+        packaging: parseFloat(document.getElementById("packaging").value) || 0,
+        labour: parseFloat(document.getElementById("labour").value) || 0,
+        overhead: parseFloat(document.getElementById("overhead").value) || 0,
+        sellingPrice: parseFloat(document.getElementById("sellingPrice").value) || 0,
+        targetMargin: parseFloat(document.getElementById("targetMargin").value) || 0,
+        commission: parseFloat(document.getElementById("commission").value) || 0
+    };
+
+   if (editingRecipeIndex === null) {
+
+    recipeDatabase.push(recipe);
+
+} else {
+
+    recipeDatabase[editingRecipeIndex] = recipe;
+    editingRecipeIndex = null;
+
+}
+
+    localStorage.setItem(
+        "recipeDatabase",
+        JSON.stringify(recipeDatabase)
+    );
+
+    refreshRecipeDropdown();
+document.getElementById("savedRecipeSelect").value = "";
+
+    alert("Recipe saved!");
+}
+
+function refreshRecipeDropdown() {
+    const select = document.getElementById("savedRecipeSelect");
+    const search =
+        document.getElementById("recipeSearch").value.toLowerCase();
+    const category =
+        document.getElementById("recipeCategoryFilter").value;
+    const status =
+        document.getElementById("recipeStatusFilter").value;
+
+    select.innerHTML =
+        '<option value="">Select saved recipe</option>';
+
+    recipeDatabase.forEach(function(recipe, index) {
+
+        if (
+    recipe.name.toLowerCase().includes(search) &&
+    (category === "" || (recipe.category || "Other") === category) &&
+    (status === "" || (recipe.status || "Testing") === status)
+) {
+
+            const option = document.createElement("option");
+
+            option.value = index;
+            option.textContent = recipe.name;
+
+            select.appendChild(option);
+        }
+
+    });
+}
+
+refreshRecipeDropdown();
+
+function loadRecipe() {
+
+    const select = document.getElementById("savedRecipeSelect");
+    const index = select.value;
+
+    if (index === "") {
+        alert("Please select a saved recipe first.");
+        return;
+    }
+
+    const recipe = recipeDatabase[index];
+editingRecipeIndex = parseInt(index);
+
+    document.getElementById("recipeName").value = recipe.name;
+    document.getElementById("recipeCategory").value = recipe.category || "Other";
+    document.getElementById("recipeStatus").value = recipe.status || "Testing";
+    document.getElementById("yield").value = recipe.yield;
+    document.getElementById("recipeNotes").value = recipe.notes || "";
+    document.getElementById("packaging").value = recipe.packaging;
+    document.getElementById("labour").value = recipe.labour;
+    document.getElementById("overhead").value = recipe.overhead;
+    document.getElementById("sellingPrice").value = recipe.sellingPrice;
+    document.getElementById("targetMargin").value =
+        recipe.targetMargin !== undefined ? recipe.targetMargin : 60;
+    document.getElementById("commission").value = recipe.commission;
+
+    const container = document.getElementById("ingredients");
+    container.innerHTML = "";
+
+    recipe.ingredients.forEach(function(savedIngredient) {
+
+        const row = document.createElement("div");
+        row.className = "ingredient";
+
+        row.innerHTML = `
+        <div>
+        <label>Ingredient</label><br>
+        <select class="ingredientSelect" onchange="fillIngredient(this)">
+        <option value="">Select ingredient</option>
+        </select>
+        </div>
+
+        <div>
+        <label>Purchase Price (BND)</label><br>
+        <input type="number" class="purchasePrice">
+        </div>
+
+        <div>
+        <label>Pack Size</label><br>
+        <input type="number" class="purchaseQty">
+        </div>
+
+        <div>
+        <label>Pack Unit</label><br>
+        <select class="purchaseUnit">
+        <option value="g">g</option>
+        <option value="kg">kg</option>
+        <option value="ml">ml</option>
+        <option value="L">L</option>
+        <option value="pcs">pcs</option>
+        </select>
+        </div>
+
+        <div>
+        <label>Amount Used</label><br>
+        <input type="number" class="usedQty">
+        </div>
+
+        <div>
+        <label>Used Unit</label><br>
+        <select class="usedUnit">
+        <option value="g">g</option>
+        <option value="kg">kg</option>
+        <option value="ml">ml</option>
+        <option value="L">L</option>
+        <option value="pcs">pcs</option>
+        </select>
+        </div>
+
+        <div>
+        <label>Cost Used</label><br>
+        <span class="ingredientCost">BND 0.00</span>
+        </div>
+
+        <button type="button" class="remove-btn" onclick="removeIngredient(this)">Remove</button>
+        `;
+
+        container.appendChild(row);
+
+        refreshIngredientDropdowns();
+
+        const ingredientSelect = row.querySelector(".ingredientSelect");
+        let ingredientIndex;
+
+if (savedIngredient.ingredientId) {
+
+    ingredientIndex = ingredientDatabase.findIndex(function(item) {
+        return item.id === savedIngredient.ingredientId;
+    });
+
+} else {
+
+    ingredientIndex = savedIngredient.ingredientIndex;
+
+}
+
+if (ingredientIndex >= 0 && ingredientDatabase[ingredientIndex]) {
+    ingredientSelect.value = ingredientIndex;
+    fillIngredient(ingredientSelect);
+} else {
+    const missingOption = document.createElement("option");
+    missingOption.value = "";
+    missingOption.textContent = "⚠ Missing ingredient";
+    missingOption.selected = true;
+    ingredientSelect.appendChild(missingOption);
+}
+        row.querySelector(".usedQty").value = savedIngredient.usedQty;
+        row.querySelector(".usedUnit").value = savedIngredient.usedUnit;
+    });
+
+    calculate();
+}
+function resetRecipe() {
+    editingRecipeIndex = null;
+    document.getElementById("recipeName").value = "";
+    document.getElementById("recipeCategory").value = "Other";
+    document.getElementById("recipeStatus").value = "Testing";
+    document.getElementById("yield").value = "";
+    document.getElementById("recipeNotes").value = "";
+    document.getElementById("ingredients").innerHTML = "";
+
+    addIngredient();
+
+    document.getElementById("packaging").value = 0;
+    document.getElementById("labour").value = 0;
+    document.getElementById("overhead").value = 0;
+
+    document.getElementById("sellingPrice").value = "";
+    document.getElementById("targetMargin").value = 60;
+    document.getElementById("commission").value = 0;
+
+    calculate();
+}
+function duplicateRecipe() {
+    const select = document.getElementById("savedRecipeSelect");
+    const index = select.value;
+
+    if (index === "") {
+        alert("Please select a recipe to duplicate first.");
+        return;
+    }
+
+    const original = recipeDatabase[index];
+
+    const copy = JSON.parse(JSON.stringify(original));
+    copy.name = original.name + " - Copy";
+
+    recipeDatabase.push(copy);
+
+    localStorage.setItem(
+        "recipeDatabase",
+        JSON.stringify(recipeDatabase)
+    );
+
+    document.getElementById("recipeSearch").value = "";
+    refreshRecipeDropdown();
+
+    document.getElementById("savedRecipeSelect").value =
+        recipeDatabase.length - 1;
+
+loadRecipe();
+
+    alert("Recipe duplicated!");
+}
+function deleteRecipe() {
+
+    const select = document.getElementById("savedRecipeSelect");
+    const index = select.value;
+
+    if (index === "") {
+        alert("Please select a recipe to delete.");
+        return;
+    }
+
+    const recipeName = recipeDatabase[index].name;
+
+    const confirmed = confirm(
+        'Are you sure you want to delete "' + recipeName + '"?'
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    recipeDatabase.splice(parseInt(index), 1);
+
+    localStorage.setItem(
+        "recipeDatabase",
+        JSON.stringify(recipeDatabase)
+    );
+
+    editingRecipeIndex = null;
+
+    refreshRecipeDropdown();
+
+    alert("Recipe deleted.");
+    }
+
+function exportData() {
+
+    const backupData = {
+        ingredients: ingredientDatabase,
+        recipes: recipeDatabase,
+        exportedAt: new Date().toISOString()
+    };
+
+    const dataString = JSON.stringify(backupData, null, 2);
+
+    const blob = new Blob(
+        [dataString],
+        { type: "application/json" }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "costora-backup.json";
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+}
+
+function importData(event) {
+
+    const file = event.target.files[0];
+
+    if (!file) {
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+
+        try {
+
+            const backupData = JSON.parse(e.target.result);
+
+            if (!backupData.ingredients || !backupData.recipes) {
+                alert("This does not look like a valid COSTORA backup file.");
+                return;
+            }
+
+            const confirmed = confirm(
+                "Importing this backup will replace your current saved ingredients and recipes. Continue?"
+            );
+
+            if (!confirmed) {
+                document.getElementById("importFile").value = "";
+                return;
+            }
+
+            ingredientDatabase = backupData.ingredients;
+            recipeDatabase = backupData.recipes;
+
+            localStorage.setItem(
+                "ingredientDatabase",
+                JSON.stringify(ingredientDatabase)
+            );
+
+            localStorage.setItem(
+                "recipeDatabase",
+                JSON.stringify(recipeDatabase)
+            );
+
+            editingIngredientIndex = null;
+            editingRecipeIndex = null;
+
+            displaySavedIngredients();
+            refreshIngredientDropdowns();
+            refreshRecipeDropdown();
+            refreshCustomIngredientCategories();
+            refreshCustomRecipeCategories();
+
+            document.getElementById("importFile").value = "";
+
+            alert("COSTORA backup imported successfully!");
+
+        } catch (error) {
+
+            alert("Could not import this file. Please choose a valid COSTORA backup.");
+
+            document.getElementById("importFile").value = "";
+        }
+    };
+
+    reader.readAsText(file);
+}
+
+</script>
+
+</body>
+</html>
