@@ -1,0 +1,18 @@
+{
+  "name": "COSTORA | Food Costing & Profit",
+  "short_name": "COSTORA",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f8f5f1",
+  "theme_color": "#f8f5f1",
+  "description": "Food costing and profit calculator for small food businesses.",
+  "icons": [
+    {
+      "src": "costora-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
