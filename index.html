@@ -1040,7 +1040,18 @@ nav {
     }
 }
 
+
+.plan-status-card{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:16px 20px;margin-bottom:20px;background:#fffdfb;border:1px solid #eadfd7;border-radius:16px;box-shadow:0 4px 14px rgba(61,48,43,.05)}
+.plan-status-main{display:flex;align-items:center;gap:12px}.plan-badge{padding:6px 11px;border-radius:999px;background:#f1ebe7;color:#5b4036;font-size:11px;font-weight:800;letter-spacing:.8px;white-space:nowrap}.plan-copy strong{display:block;color:#3d302b;font-size:14px;margin-bottom:3px}.plan-copy span{color:#7b6c65;font-size:12px}.recipe-limit-track{width:170px;height:8px;background:#eee6e1;border-radius:999px;overflow:hidden}.recipe-limit-fill{height:100%;width:0;background:#5b4036;border-radius:999px}.pro-upgrade-box{display:none;margin-top:14px;padding:16px;border:1px solid #dfd2ca;border-radius:14px;background:linear-gradient(135deg,#fffaf6,#f5ece6)}.pro-upgrade-box.show{display:block}.pro-feature-preview{padding-left:20px;color:#5f514b;font-size:13px;line-height:1.7}@media(max-width:700px){.plan-status-card{flex-direction:column;align-items:stretch}.recipe-limit-track{width:100%}}
+
+/* ===== COSTORA ACCOUNT + CLOUD V1 ===== */
+.account-card{background:white;border:1px solid #eadfd7;border-radius:18px;padding:18px 20px;margin-bottom:20px;box-shadow:0 6px 20px rgba(61,48,43,.06)}
+.account-top{display:flex;justify-content:space-between;align-items:center;gap:16px}.account-copy strong{display:block;color:#5b4036;font-size:15px}.account-copy span{display:block;color:#7b6c65;font-size:12px;margin-top:4px}.account-actions{display:flex;gap:9px;flex-wrap:wrap}.account-actions button{width:auto;margin:0;padding:10px 14px}.cloud-status{font-size:12px;color:#7b6c65;margin-top:10px}.cloud-status.ok{color:#557a5b}.cloud-status.error{color:#9b4b4b}
+.auth-panel{display:none;margin-top:16px;padding-top:16px;border-top:1px solid #eadfd7}.auth-panel.show{display:block}.auth-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.auth-grid input{width:100%;box-sizing:border-box}.auth-buttons{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}.auth-buttons button{width:auto;margin:0}
+@media(max-width:700px){.account-top{flex-direction:column;align-items:stretch}.account-actions,.auth-buttons{display:grid;grid-template-columns:1fr}.account-actions button,.auth-buttons button{width:100%}.auth-grid{grid-template-columns:1fr}}
+
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
@@ -1062,6 +1073,32 @@ nav {
     <a href="#results-section">Results</a>
 </div>
 
+<div class="account-card" id="accountCard">
+<div class="account-top">
+  <div class="account-copy">
+    <strong id="accountTitle">☁️ COSTORA Cloud</strong>
+    <span id="accountSubtitle">Sign in to back up and sync your COSTORA data.</span>
+  </div>
+  <div class="account-actions">
+    <button type="button" class="add-btn" id="openAuthBtn" onclick="toggleAuthPanel()">Sign In / Create Account</button>
+    <button type="button" class="reset-btn" id="syncNowBtn" onclick="syncNow()" style="display:none">☁️ Sync Now</button>
+    <button type="button" class="reset-btn" id="signOutBtn" onclick="signOutCostora()" style="display:none">Sign Out</button>
+  </div>
+</div>
+<div class="auth-panel" id="authPanel">
+  <div class="auth-grid">
+    <input type="email" id="authEmail" placeholder="Email address" autocomplete="email">
+    <input type="password" id="authPassword" placeholder="Password (minimum 6 characters)" autocomplete="current-password">
+  </div>
+  <div class="auth-buttons">
+    <button type="button" class="add-btn" onclick="signInCostora()">Sign In</button>
+    <button type="button" class="reset-btn" onclick="signUpCostora()">Create Account</button>
+  </div>
+</div>
+<div class="cloud-status" id="cloudStatus">Local storage is active. Cloud sync starts after sign-in.</div>
+</div>
+
+<div class="plan-status-card"><div class="plan-status-main"><span class="plan-badge">COSTORA FREE</span><div class="plan-copy"><strong id="recipeUsageText">0 of 10 recipes used</strong><span>Free plan includes up to 10 saved recipes.</span></div></div><div class="recipe-limit-track"><div class="recipe-limit-fill" id="recipeLimitFill"></div></div></div>
 <div class="card" id="recipe-section">
 <h2>Recipe Details</h2>
 
@@ -1127,10 +1164,8 @@ nav {
 
 <button type="button" class="reset-btn" onclick="resetRecipe()">
     ＋ New Recipe
-</button>
-
+</button><div class="pro-upgrade-box" id="proUpgradeBox"><strong>✦ You've reached the COSTORA Free recipe limit</strong><p>Your recipes are safe. COSTORA Pro will unlock:</p><ul class="pro-feature-preview"><li>Cloud backup &amp; sync</li><li>Unlimited recipes</li><li>Professional costing reports</li><li>Business dashboard</li><li>Sync across devices</li></ul><button type="button" class="add-btn" onclick="previewCostoraPro()">Explore COSTORA Pro</button></div>
 </div>
-
 <div class="card" id="saved-recipes-section">
 <h2>📚 Saved Recipes</h2>
 
@@ -1491,6 +1526,238 @@ Net Profit After Commission: BND <span id="profit">0.00</span>
 </div>
 
 <script>
+
+/* ===== COSTORA SUPABASE ACCOUNT + CLOUD SYNC V1 ===== */
+const COSTORA_SUPABASE_URL = "https://lliedoidyehyewptpvhc.supabase.co";
+const COSTORA_SUPABASE_KEY = "sb_publishable_4jBhJ1I3HHGL-BhK86nsMw_XOpOJpL9";
+const costoraSupabase = window.supabase.createClient(COSTORA_SUPABASE_URL, COSTORA_SUPABASE_KEY);
+let costoraUser = null;
+let cloudSaveTimer = null;
+let cloudApplying = false;
+
+function toggleAuthPanel(forceOpen) {
+    const panel = document.getElementById("authPanel");
+    if (!panel) return;
+    const shouldOpen = typeof forceOpen === "boolean" ? forceOpen : !panel.classList.contains("show");
+    panel.classList.toggle("show", shouldOpen);
+}
+function setCloudStatus(message, type) {
+    const el = document.getElementById("cloudStatus");
+    if (!el) return;
+    el.textContent = message;
+    el.className = "cloud-status" + (type ? " " + type : "");
+}
+function updateAccountUI() {
+    const signedIn = !!costoraUser;
+    const title = document.getElementById("accountTitle");
+    const subtitle = document.getElementById("accountSubtitle");
+    const openBtn = document.getElementById("openAuthBtn");
+    const syncBtn = document.getElementById("syncNowBtn");
+    const outBtn = document.getElementById("signOutBtn");
+    if (!title) return;
+    if (signedIn) {
+        title.textContent = "☁️ COSTORA Cloud Connected";
+        subtitle.textContent = costoraUser.email || "Signed in";
+        openBtn.style.display = "none";
+        syncBtn.style.display = "";
+        outBtn.style.display = "";
+        toggleAuthPanel(false);
+    } else {
+        title.textContent = "☁️ COSTORA Cloud";
+        subtitle.textContent = "Sign in to back up and sync your COSTORA data.";
+        openBtn.style.display = "";
+        syncBtn.style.display = "none";
+        outBtn.style.display = "none";
+        setCloudStatus("Local storage is active. Cloud sync starts after sign-in.");
+    }
+}
+function collectCostoraCloudData() {
+    return {
+        version: 1,
+        ingredientDatabase: Array.isArray(ingredientDatabase) ? ingredientDatabase : [],
+        recipeDatabase: Array.isArray(recipeDatabase) ? recipeDatabase : [],
+        customIngredientCategories: Array.isArray(customIngredientCategories) ? customIngredientCategories : [],
+        customRecipeCategories: Array.isArray(customRecipeCategories) ? customRecipeCategories : []
+    };
+}
+function persistCostoraLocalData() {
+    localStorage.setItem("ingredientDatabase", JSON.stringify(ingredientDatabase || []));
+    localStorage.setItem("recipeDatabase", JSON.stringify(recipeDatabase || []));
+    localStorage.setItem("customIngredientCategories", JSON.stringify(customIngredientCategories || []));
+    localStorage.setItem("customRecipeCategories", JSON.stringify(customRecipeCategories || []));
+}
+function refreshCostoraAfterCloudLoad() {
+    editingIngredientIndex = null;
+    editingRecipeIndex = null;
+    refreshCustomIngredientCategories();
+    refreshCustomRecipeCategories();
+    displaySavedIngredients();
+    refreshIngredientDropdowns();
+    refreshRecipeDropdown();
+    updatePlanStatus();
+}
+async function saveCloudData(showMessage) {
+    if (!costoraUser || cloudApplying) return;
+    if (showMessage) setCloudStatus("Syncing to cloud…");
+    const payload = collectCostoraCloudData();
+    const { error } = await costoraSupabase.from("costora_user_data").upsert({
+        user_id: costoraUser.id,
+        app_data: payload
+    }, { onConflict: "user_id" });
+    if (error) {
+        setCloudStatus("Cloud sync failed: " + error.message, "error");
+        return;
+    }
+    setCloudStatus("☁️ Cloud backup up to date · " + new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}), "ok");
+}
+function scheduleCloudSave() {
+    if (!costoraUser || cloudApplying) return;
+    clearTimeout(cloudSaveTimer);
+    cloudSaveTimer = setTimeout(function(){ saveCloudData(false); }, 700);
+}
+async function loadCloudData() {
+    if (!costoraUser) return;
+    setCloudStatus("Checking your cloud backup…");
+    const { data, error } = await costoraSupabase
+        .from("costora_user_data")
+        .select("app_data, plan")
+        .eq("user_id", costoraUser.id)
+        .maybeSingle();
+
+    if (error) {
+        setCloudStatus("Could not load cloud data: " + error.message, "error");
+        return;
+    }
+
+    if (!data) {
+        await saveCloudData(true);
+        return;
+    }
+
+    const cloud = data.app_data || {};
+    const hasCloudData =
+        (Array.isArray(cloud.recipeDatabase) && cloud.recipeDatabase.length > 0) ||
+        (Array.isArray(cloud.ingredientDatabase) && cloud.ingredientDatabase.length > 0);
+    const hasLocalData = recipeDatabase.length > 0 || ingredientDatabase.length > 0;
+
+    if (hasCloudData && hasLocalData) {
+        const useCloud = confirm("COSTORA found data on this device and in your cloud account.\n\nPress OK to use the CLOUD copy on this device.\nPress Cancel to keep this DEVICE copy and upload it to the cloud.");
+        if (!useCloud) {
+            await saveCloudData(true);
+            return;
+        }
+    }
+
+    if (hasCloudData) {
+        cloudApplying = true;
+        ingredientDatabase = Array.isArray(cloud.ingredientDatabase) ? cloud.ingredientDatabase : [];
+        recipeDatabase = Array.isArray(cloud.recipeDatabase) ? cloud.recipeDatabase : [];
+        customIngredientCategories = Array.isArray(cloud.customIngredientCategories) ? cloud.customIngredientCategories : [];
+        customRecipeCategories = Array.isArray(cloud.customRecipeCategories) ? cloud.customRecipeCategories : [];
+        persistCostoraLocalData();
+        refreshCostoraAfterCloudLoad();
+        cloudApplying = false;
+        setCloudStatus("☁️ Cloud data loaded on this device.", "ok");
+    } else {
+        setCloudStatus("☁️ Cloud connected. Your current device data is backed up.", "ok");
+    }
+
+    if (data.plan === "pro") {
+        costoraPlan = "pro";
+        localStorage.setItem("costoraPlan", "pro");
+    } else {
+        costoraPlan = "free";
+        localStorage.setItem("costoraPlan", "free");
+    }
+    updatePlanStatus();
+}
+async function signUpCostora() {
+    const email = document.getElementById("authEmail").value.trim();
+    const password = document.getElementById("authPassword").value;
+    if (!email || password.length < 6) {
+        alert("Please enter a valid email and a password with at least 6 characters.");
+        return;
+    }
+    setCloudStatus("Creating your COSTORA account…");
+    const { data, error } = await costoraSupabase.auth.signUp({ email, password });
+    if (error) {
+        setCloudStatus(error.message, "error");
+        alert(error.message);
+        return;
+    }
+    if (data.session) {
+        costoraUser = data.user;
+        updateAccountUI();
+        await loadCloudData();
+        alert("COSTORA account created and signed in!");
+    } else {
+        setCloudStatus("Account created. Check your email to confirm your address, then return here and sign in.", "ok");
+        alert("Account created! Please check your email for the confirmation link, then come back to COSTORA and sign in.");
+    }
+}
+async function signInCostora() {
+    const email = document.getElementById("authEmail").value.trim();
+    const password = document.getElementById("authPassword").value;
+    if (!email || !password) {
+        alert("Please enter your email and password.");
+        return;
+    }
+    setCloudStatus("Signing in…");
+    const { data, error } = await costoraSupabase.auth.signInWithPassword({ email, password });
+    if (error) {
+        setCloudStatus(error.message, "error");
+        alert(error.message);
+        return;
+    }
+    costoraUser = data.user;
+    updateAccountUI();
+    await loadCloudData();
+}
+async function signOutCostora() {
+    await costoraSupabase.auth.signOut();
+    costoraUser = null;
+    costoraPlan = "free";
+    localStorage.setItem("costoraPlan", "free");
+    updateAccountUI();
+    updatePlanStatus();
+}
+async function syncNow() {
+    if (!costoraUser) {
+        toggleAuthPanel(true);
+        return;
+    }
+    await saveCloudData(true);
+}
+async function initializeCostoraCloud() {
+    const { data } = await costoraSupabase.auth.getSession();
+    costoraUser = data.session ? data.session.user : null;
+    updateAccountUI();
+    if (costoraUser) await loadCloudData();
+
+    costoraSupabase.auth.onAuthStateChange(function(event, session) {
+        costoraUser = session ? session.user : null;
+        updateAccountUI();
+    });
+}
+
+const COSTORA_FREE_RECIPE_LIMIT=10;let costoraPlan=localStorage.getItem("costoraPlan")||"free";
+function updatePlanStatus(){const count=Array.isArray(recipeDatabase)?recipeDatabase.length:0,usage=document.getElementById("recipeUsageText"),fill=document.getElementById("recipeLimitFill"),box=document.getElementById("proUpgradeBox");if(!usage||!fill||!box)return;if(costoraPlan==="pro"){usage.textContent=count+" recipes saved · Unlimited";fill.style.width="100%";box.classList.remove("show");return;}usage.textContent=Math.min(count,10)+" of 10 recipes used";fill.style.width=Math.min(count*10,100)+"%";box.classList.toggle("show",count>=10);}
+function canCreateAnotherRecipe(){return costoraPlan==="pro"||recipeDatabase.length<10;}
+function showRecipeLimitMessage(){updatePlanStatus();const box=document.getElementById("proUpgradeBox");if(box){box.classList.add("show");box.scrollIntoView({behavior:"smooth",block:"center"});}alert("You've reached the COSTORA Free limit of 10 saved recipes. You can still edit your existing recipes.");}
+function previewCostoraPro(){alert("COSTORA Pro is coming soon! Pro will include cloud backup & sync, unlimited recipes, professional costing reports, a business dashboard, and sync across devices.");}
+
+
+
+/* Auto-back up COSTORA data after existing save/delete/import actions. */
+(function(){
+    const originalSetItem = Storage.prototype.setItem;
+    Storage.prototype.setItem = function(key, value) {
+        originalSetItem.apply(this, arguments);
+        if (this === localStorage && ["ingredientDatabase","recipeDatabase","customIngredientCategories","customRecipeCategories"].includes(key)) {
+            scheduleCloudSave();
+        }
+    };
+})();
 
 function addIngredient() {
 
@@ -2215,7 +2482,7 @@ function refreshCustomRecipeCategories() {
     });
 }
 
-function saveRecipe() {
+function saveRecipe() {if(editingRecipeIndex===null&&!canCreateAnotherRecipe()){showRecipeLimitMessage();return;}
 
     const name = document.getElementById("recipeName").value.trim();
     const recipeYield = parseFloat(document.getElementById("yield").value);
@@ -2303,7 +2570,7 @@ document.getElementById("savedRecipeSelect").value = "";
     alert("Recipe saved!");
 }
 
-function refreshRecipeDropdown() {
+function refreshRecipeDropdown() {setTimeout(updatePlanStatus,0);
     const select = document.getElementById("savedRecipeSelect");
     const search =
         document.getElementById("recipeSearch").value.toLowerCase();
@@ -2479,7 +2746,7 @@ function resetRecipe() {
 
     calculate();
 }
-function duplicateRecipe() {
+function duplicateRecipe() {if(!canCreateAnotherRecipe()){showRecipeLimitMessage();return;}
     const select = document.getElementById("savedRecipeSelect");
     const index = select.value;
 
@@ -2640,7 +2907,7 @@ function importData(event) {
     reader.readAsText(file);
 }
 
-</script>
+document.addEventListener("DOMContentLoaded",function(){ updatePlanStatus(); initializeCostoraCloud(); });</script>
 
 
 <script>
